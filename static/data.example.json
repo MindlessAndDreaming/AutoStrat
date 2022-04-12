@@ -1,0 +1,14 @@
+{ 
+    "vaults" : [
+        {
+            "address" : "0x578375c3af7d61586c2C3A7BA87d2eEd640EFA40",
+            "id": 0,
+            "vaultType": "camvault"
+        },
+        {
+            "address" : "0x11A33631a5B5349AF3F165d2B7901A4d67e561ad",
+            "id": 1,
+            "vaultType": "camvault"
+        }
+    ]
+}
