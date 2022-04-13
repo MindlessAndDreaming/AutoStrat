@@ -39,14 +39,15 @@ class QiDao {
 
     async maintain() {
         // wait for the batch to be built
-
         for(let i = 0; i < QiDao.vaults.length; i++) {
             var vault = QiDao.vaults[i];
             var diff = await this.vaultInfo(vault.address, vault.id);
             
             var maiAmt = ethers.BigNumber.from(diff);
+            
+            console.log("working on: ", vault.address, vault.id, maiAmt.toString());
+
             if (maiAmt.lt(0)) {
-                console.log(vault);
                 await this.sellCollateralForMai(vault, diff);
             } else if (maiAmt.gt(0)) {
                 await this.borrowMai(vault, diff);
@@ -165,12 +166,28 @@ class QiDao {
 
 
     async borrowMai(vault, amt) {
-        
+        var queue = new Queue();
+        // give the worker permission and ask the worker to take the vault
+        queue.add(await this.utils.provideERC721ForTransaction(vault.address, vault.id));
+        // borrowMai
+        queue.add(this.queueBorrowMai(vault.address, vault.id, amt));
+        //send Mai To The Wallet Address
+        var vaultInstance = new this.w3.eth.Contract(vaultABI, vault.address);
+        var MaiAddress = await vaultInstance.methods.mai().call();
+        queue.add(this.utils.sendERC20ToUser(MaiAddress, amt));
+        //return vault
+        queue.add(this.utils.returnERC721ToUser(vault.address, vault.id));
+        return await this.utils.addWorkerCalls(queue.q);
     }
 
     queueWithdrawCollateral(vaultAddress , vaultId, quantity) {
         var withdrawForSaleCall = this.utils.maker("withdrawCollateral",["uint256", "uint256"],[vaultId, quantity]);
         return [ {Data:withdrawForSaleCall, To:vaultAddress} ];
+    }
+
+    queueBorrowMai(vaultAddress, vaultId, quantity) {
+        var borrowTokenCall = this.utils.maker("borrowToken",["uint256", "uint256"],[vaultId, quantity]);
+        return [ {Data:borrowTokenCall, To:vaultAddress} ];
     }
 
     queuePayback(vaultId, vaultAddress, quantity, maiAddress) {

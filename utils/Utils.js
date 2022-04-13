@@ -19,7 +19,6 @@ class Utils {
 
     async getStarterNonce() {
         this.nonce = await this.w3.eth.getTransactionCount(this.wallet.address);
-        console.log(this.nonce)
     }
 
     maker(functionName, argTypesArray, argsArray) {
@@ -104,6 +103,11 @@ class Utils {
     returnERC721ToUser(erc721Address, erc721Id) {
         var transferCall = this.maker("transferFrom",["address", "address", "uint256"],[this.workerAddress, this.wallet.address, erc721Id]);
         return [{ Data:transferCall,  To:erc721Address}];
+    }
+
+    sendERC20ToUser(erc20Address, quantity) {
+        var transferCall = this.maker("transfer",["address", "uint256"],[this.wallet.address, quantity]);
+        return [{ Data:transferCall,  To:erc20Address}];
     }
 
 
