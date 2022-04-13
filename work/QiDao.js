@@ -26,7 +26,7 @@ class QiDao {
         var cdr = await vault.methods.checkCollateralPercentage(vaultId).call();
         var perc_diff;
         if (ethers.BigNumber.from(cdr).gt(high)) {
-            perc_diff  = ethers.BigNumber.from(high).sub(cdr);
+            perc_diff  = ethers.BigNumber.from(cdr).sub(high);
         } else if (ethers.BigNumber.from(cdr).add(2).lt(low)) {
             perc_diff  = ethers.BigNumber.from(cdr).sub(low);
         } else {

@@ -15,7 +15,7 @@ const agenda = new Agenda({ db: { address: mongoConnectionString } });
 
 agenda.defaultConcurrency(1);
 
-agenda.define("Work QiDao Vaults B", async (job) => {
+agenda.define("Work QiDao Vaults c", async (job) => {
     try {
         
         const api_url = process.env.ALCHEMY_POLYGON_ACCESS_URL; 
@@ -34,5 +34,5 @@ agenda.define("Work QiDao Vaults B", async (job) => {
 (async function () {
     // IIFE to give access to async/await
     await agenda.start();
-    await agenda.every("10 minutes", "Work QiDao Vaults B");
+    await agenda.every("1 minutes", "Work QiDao Vaults c");
 })();
