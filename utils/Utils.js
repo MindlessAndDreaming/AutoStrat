@@ -48,6 +48,15 @@ class Utils {
         this.queue.push({ To, Data });
     }
 
+    sleep(milliseconds) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+
+    async afterTransaction(err, result) {
+        if(err){console.log(err)}
+        else {console.log("confirmed:", result)}
+    }
+
     async signRequest(ContractMethod, recipient) {
 
         var tx = {
@@ -60,9 +69,8 @@ class Utils {
         };
         
         const signedTx = await this.w3.eth.accounts.signTransaction(tx, this.wallet.privateKey);
-        console.log(this.nonce);
         this.nonce += 1;
-        return this.w3.eth.sendSignedTransaction.request(signedTx.rawTransaction, "receipt", console.log ); 
+        return this.w3.eth.sendSignedTransaction.request(signedTx.rawTransaction, "receipt", this.afterTransaction.bind(this) );
     }
 
     async addWorkerCalls(transactionList) {
@@ -110,6 +118,17 @@ class Utils {
         return [{ Data:transferCall,  To:erc20Address}];
     }
 
+    async erc20Info(erc20Address){
+        var ERC20 = new this.w3.eth.Contract(ierc20EABI, erc20Address);
+        var name;
+        var decimals;
+
+        name = await ERC20.methods.name().call();
+        decimals = await ERC20.methods.decimals().call();  
+        
+        
+        return { name, decimals} ;
+    }
 
 }
 

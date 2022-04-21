@@ -42,10 +42,10 @@ class QiDao {
         for(let i = 0; i < QiDao.vaults.length; i++) {
             var vault = QiDao.vaults[i];
             var diff = await this.vaultInfo(vault.address, vault.id);
-            
+             
             var maiAmt = ethers.BigNumber.from(diff);
             
-            console.log("working on: ", vault.address, vault.id, maiAmt.toString());
+            console.log("working on:", vault.address, vault.id, ethers.utils.formatEther(maiAmt),"MAI");
 
             if (maiAmt.lt(0)) {
                 await this.sellCollateralForMai(vault, diff);
@@ -98,10 +98,9 @@ class QiDao {
         }
         
         var info = await this.process(vault.vaultType)(collateralAddress, collateralToWithdraw);
-        
-        console.log(info.quantity.toString())
-        console.log(maiAmt.toString())
-        
+        var collateralInfo = await this.utils.erc20Info(collateralAddress);
+
+        console.log("liquidating:", ethers.utils.formatUnits(info.quantity, collateralInfo.decimals), collateralInfo.name, "for", ethers.utils.formatEther(maiAmt), "MAI")
         
         var queue = new Queue();
         // give the worker permission and ask the worker to take the vault
@@ -140,7 +139,7 @@ class QiDao {
     async getBaseInfo(collateralAddress, collateralToWithdraw) {
         return {
             info: {
-                underlyingAssetAddress: collateralAddress,
+                UnderlyingAssetAddress: collateralAddress,
             },
             quantity : collateralToWithdraw
         }
@@ -148,7 +147,7 @@ class QiDao {
 
     process(vaultType) {
         const processors = {
-            "single" : this.getBaseinfo,
+            "single" : this.getBaseInfo.bind(this),
             "camvault" : this.cam.getBaseInfo.bind(this.cam)
         }
 
