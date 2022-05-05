@@ -9,7 +9,7 @@ class Utils {
     static getAPIURL(chainId) {
         switch(chainId) {
             case 137:
-                return process.env.ALCHEMY_POLYGON_ACCESS_URL;
+                return process.env.POLYGON_ACCESS_URL;
             case 250:
                 return process.env.FANTOM_ACCESS_URL;
         }
