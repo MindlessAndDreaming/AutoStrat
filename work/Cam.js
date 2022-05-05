@@ -3,17 +3,11 @@ const { ethers } = require('ethers');
 const IATokenABI = require("../static/IAmToken/abi.json");
 const ICamTokenABI = require("../static/ICamToken/abi.json");
 
-const Utils = require("../utils/Utils.js");
-
-
-require('dotenv').config();
-
 
 class Cam {
     constructor(w3, utils) {
         this.w3 = w3;
         this.utils = utils;
-        this.workerAddress = process.env.WORKER_ADDRESS;
     }
 
     async getBaseInfo (camAddress, camAmt) {
@@ -64,7 +58,7 @@ class Cam {
         var leaveCamTokenContractCall = this.utils.maker("leave",["uint256"],[camAmt]);
         var leaveCAM = {Data:leaveCamTokenContractCall, To:camAddress};
 
-        var leaveATokenContractCall = this.utils.maker("withdraw",["address","uint256","address"],[info.info.UnderlyingAssetAddress, info.quantity, this.workerAddress]);
+        var leaveATokenContractCall = this.utils.maker("withdraw",["address","uint256","address"],[info.info.UnderlyingAssetAddress, info.quantity, this.utils.workerAddress]);
         var leaveAAVE = {Data:leaveATokenContractCall, To:info.info.AaveLendingPoolAddress};
         
         return [leaveCAM, leaveAAVE];

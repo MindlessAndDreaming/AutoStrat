@@ -15,17 +15,9 @@ const agenda = new Agenda({ db: { address: mongoConnectionString } });
 
 agenda.defaultConcurrency(1);
 
-agenda.define("Work QiDao Vaults 4", async (job) => {
+agenda.define("Do Work", async (job) => {
     try {
-        
-        const api_url = process.env.ALCHEMY_POLYGON_ACCESS_URL; 
-        const w3 = createAlchemyWeb3(api_url);
-        const utils = new Utils(w3);
-        const swap = new Swap(w3, utils);
-        await utils.getStarterNonce();
-
-        var qidao = new QiDao(w3, utils, swap);
-        qidao.maintain();   
+        QiDao.work();
     } catch (error) {
         console.log(error);
     }
@@ -34,5 +26,5 @@ agenda.define("Work QiDao Vaults 4", async (job) => {
 (async function () {
     // IIFE to give access to async/await
     await agenda.start();
-    await agenda.every("10 minutes", "Work QiDao Vaults 4");
+    await agenda.every("10 minutes", "Do Work");
 })();

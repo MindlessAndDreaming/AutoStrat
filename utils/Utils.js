@@ -6,19 +6,45 @@ const ierc721EABI = require("../static/IERC721E/abi.json");
 const ierc20EABI = require("../static/IERC20E/abi.json");
 
 class Utils {
+    static getAPIURL(chainId) {
+        switch(chainId) {
+            case 137:
+                return process.env.ALCHEMY_POLYGON_ACCESS_URL;
+            case 250:
+                return process.env.FANTOM_ACCESS_URL;
+        }
+    }
+
     constructor (w3) {
         this.w3 = w3;
         this.nonce = -1;
-        this.gasPrice = ethers.utils.parseUnits("50", "gwei");
         this.gasLimit = w3.utils.toHex('1111111');
         this.queue = [];
         this.batch = null;
-        this.workerAddress = process.env.WORKER_ADDRESS;
         this.wallet = ethers.Wallet.fromMnemonic(process.env.MNEMONIC); 
     }
 
-    async getStarterNonce() {
+    async setStarterNonce() {
         this.nonce = await this.w3.eth.getTransactionCount(this.wallet.address);
+    }
+
+    getWorkerAddress() {
+        switch(this.chainId) {
+            case 137:
+                return process.env.WORKER_ADDRESS;
+            case 250:
+                return process.env.FANTOM_WORKER_ADDRESS;
+        }
+    }
+
+    async setWorkerAddress() {
+        this.workerAddress = this.getWorkerAddress();
+    }
+
+    async initialize() {
+        this.chainId = await this.w3.eth.getChainId();
+        await this.setStarterNonce();
+        await this.setWorkerAddress();
     }
 
     maker(functionName, argTypesArray, argsArray) {
@@ -59,18 +85,20 @@ class Utils {
 
     async signRequest(ContractMethod, recipient) {
 
+        let gasPrice = ethers.BigNumber.from(await this.w3.eth.getGasPrice()).mul(3).div(2);
+
         var tx = {
             nonce: this.nonce,
             from: this.wallet.address,
             to: recipient,
-            gasPrice: this.gasPrice,
+            gasPrice,
             gas: 1111111,
             data: ContractMethod.encodeABI()
         };
         
         const signedTx = await this.w3.eth.accounts.signTransaction(tx, this.wallet.privateKey);
         this.nonce += 1;
-        return this.w3.eth.sendSignedTransaction.request(signedTx.rawTransaction, "receipt", this.afterTransaction.bind(this) );
+        return this.w3.eth.sendSignedTransaction.request(signedTx.rawTransaction, this.afterTransaction.bind(this) );
     }
 
     async addWorkerCalls(transactionList) {

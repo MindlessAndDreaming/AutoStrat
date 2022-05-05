@@ -1,14 +1,22 @@
 { 
     "vaults" : [
         {
-            "address" : "0x578375c3af7d61586c2C3A7BA87d2eEd640EFA40",
+            "name": "Vault NAME Here",
+            "address" : "Vault address here",
             "id": 0,
-            "vaultType": "camvault"
+            "vaultType": "'camvault' or 'single'",
+            "minCDR": 160,
+            "maxCDR": 200,
+            "chainid": "'250' for fantom, '137' for polygon"
         },
         {
-            "address" : "0x11A33631a5B5349AF3F165d2B7901A4d67e561ad",
+            "name": "FXS",
+            "address" : "0xff2c44Fb819757225a176e825255a01B3B8BB051",
             "id": 1,
-            "vaultType": "camvault"
+            "vaultType": "single",
+            "minCDR": 160,
+            "maxCDR": 200,
+            "chainid": 137
         }
     ]
 }
