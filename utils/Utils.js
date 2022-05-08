@@ -118,7 +118,8 @@ class Utils {
 
     async execute() {
         try {
-            if (this.batch !== null) this.batch.execute();
+            if (this.batch !== null) return await this.batch.execute();
+            else return [];
         } catch (error) {
             console.log(error)
         }

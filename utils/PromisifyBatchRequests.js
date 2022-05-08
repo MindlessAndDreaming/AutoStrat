@@ -15,7 +15,7 @@ class PromisifyBatchRequest {
 
                 let transactionReceipt = null
                 while (transactionReceipt == null) {
-                    transactionReceipt = await new this.w3.eth.getTransactionReceipt(data);
+                    transactionReceipt = await new that.w3.eth.getTransactionReceipt(data);
                     await sleep(2500);
                 }
                 
