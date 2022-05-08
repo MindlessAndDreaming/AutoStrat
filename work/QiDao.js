@@ -97,7 +97,7 @@ class QiDao {
             
         var maiAmt = ethers.BigNumber.from(diff);
         
-        console.log("working on:", vault.name, vault.id, ethers.utils.formatEther(maiAmt),"MAI");
+        console.log("working on:", vault.name, vault.id, ethers.utils.formatEther(maiAmt),"MAI:", new Date().toString());
         
         
         if (maiAmt.lt(0)) {
@@ -107,6 +107,8 @@ class QiDao {
         }
     
         await this.utils.execute();
+        for(let i=0; i < txs.length; i++) console.log("hash:", txs[i].hash, "status:", txs[i].status);
+
     }
 
 

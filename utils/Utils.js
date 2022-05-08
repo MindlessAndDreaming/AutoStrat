@@ -69,8 +69,8 @@ class Utils {
 
     async addLocalCall(ContractMethod, recipient) {
         this.initBatch();
-        var request = await this.signRequest(ContractMethod, recipient); 
-        this.batch.add(request);
+        var signedRequest = await this.signRequest(ContractMethod, recipient); 
+        this.batch.add(this.w3.eth.sendSignedTransaction.request, signedRequest);
     }
 
     queueWorkerCall(Data, To) {
@@ -101,7 +101,7 @@ class Utils {
         
         const signedTx = await this.w3.eth.accounts.signTransaction(tx, this.wallet.privateKey);
         this.nonce += 1;
-        return this.w3.eth.sendSignedTransaction.request(signedTx.rawTransaction, this.afterTransaction.bind(this) );
+        return signedTx.rawTransaction;
     }
 
     async addWorkerCalls(transactionList) {
@@ -109,9 +109,9 @@ class Utils {
         if(transactionList.length > 0){
             var Worker = new this.w3.eth.Contract(workerABI, this.workerAddress);
             var method = Worker.methods.execute(transactionList);
-            var request = await this.signRequest(method, this.workerAddress);
+            var signedRequest = await this.signRequest(method, this.workerAddress);
 
-            this.batch.add(request);
+            this.batch.add(this.w3.eth.sendSignedTransaction.request, signedRequest);
         }
         return this.batch;
     }
@@ -125,6 +125,7 @@ class Utils {
     }
 
     initBatch(){
+
         if(this.batch === null ){
             this.batch = new PromisifyBatchRequest(this.w3);
         }
