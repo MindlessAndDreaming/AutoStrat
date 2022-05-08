@@ -1,9 +1,12 @@
 
 require('dotenv').config();
+
 const { ethers } = require('ethers');
 const workerABI = require("../static/Worker/abi.json");
 const ierc721EABI = require("../static/IERC721E/abi.json");
 const ierc20EABI = require("../static/IERC20E/abi.json");
+const PromisifyBatchRequest = require("./PromisifyBatchRequests.js");
+
 
 class Utils {
     static getAPIURL(chainId) {
@@ -85,7 +88,7 @@ class Utils {
 
     async signRequest(ContractMethod, recipient) {
 
-        let gasPrice = ethers.BigNumber.from(await this.w3.eth.getGasPrice()).mul(3).div(2);
+        let gasPrice = ethers.utils.parseUnits("75", "gwei");
 
         var tx = {
             nonce: this.nonce,
@@ -123,7 +126,7 @@ class Utils {
 
     initBatch(){
         if(this.batch === null ){
-            this.batch = new this.w3.BatchRequest();
+            this.batch = new PromisifyBatchRequest(this.w3);
         }
     }
 
@@ -157,7 +160,6 @@ class Utils {
         
         return { name, decimals} ;
     }
-
 }
 
 module.exports = Utils;

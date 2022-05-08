@@ -61,7 +61,7 @@ class QiDao {
         var perc_diff;
         if (ethers.BigNumber.from(cdr).gt(vault.maxCDR)) {
             perc_diff  = ethers.BigNumber.from(cdr).sub(vault.maxCDR);
-        } else if (ethers.BigNumber.from(cdr).add(2).lt(vault.minCDR)) {
+        } else if (ethers.BigNumber.from(cdr).add(3).lt(vault.minCDR)) {
             perc_diff  = ethers.BigNumber.from(cdr).sub(vault.minCDR);
         } else {
             perc_diff = ethers.BigNumber.from(0);
@@ -98,14 +98,15 @@ class QiDao {
         var maiAmt = ethers.BigNumber.from(diff);
         
         console.log("working on:", vault.name, vault.id, ethers.utils.formatEther(maiAmt),"MAI");
-
+        
+        
         if (maiAmt.lt(0)) {
             await this.sellCollateralForMai(vault, diff);
         } else if (maiAmt.gt(0)) {
             await this.borrowMai(vault, diff);
         }
     
-        this.utils.execute();
+        await this.utils.execute();
     }
 
 

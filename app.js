@@ -3,10 +3,7 @@
 require('dotenv').config();
 
 const QiDao = require("./work/QiDao.js");
-const Swap = require("./utils/Swap.js");
-const Utils = require("./utils/Utils.js");
 
-const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const Agenda = require("agenda");
 
 const mongoConnectionString = "mongodb://127.0.0.1/agenda";
