@@ -107,7 +107,7 @@ class QiDao {
         }
     
         var txs = await this.utils.execute();
-        for(let i=0; i < txs.length; i++) console.log("hash:", txs[i].hash, "status:", txs[i].status);
+        for(let i=0; i < txs.length; i++) console.log("hash:", txs[i].transactionHash, "status:", txs[i].status);
 
     }
 

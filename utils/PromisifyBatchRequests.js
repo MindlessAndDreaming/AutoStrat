@@ -5,6 +5,9 @@ class PromisifyBatchRequest {
         this.requests = [];
     }
     add(_request, ...params) {
+        const sleep = (milliseconds) => {
+            return new Promise(resolve => setTimeout(resolve, milliseconds))
+        }
         let that = this;
         let request = new Promise((resolve, reject) => {
             that.batch.add(_request.call(null, ...params, async (err, data) => {
