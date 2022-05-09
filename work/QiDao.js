@@ -141,14 +141,13 @@ class QiDao {
         var minCDR = await vaultInstance.methods._minimumCollateralPercentage().call();
         var collateralAddress =  await vaultInstance.methods.collateral().call();
         var debtValueInCollateral = ethers.BigNumber.from(totalDebt).mul(ethers.BigNumber.from(10).pow(priceDecimals)).div(maiPerToken)
-        var minCollateralAmt = debtValueInCollateral.mul(ethers.BigNumber.from(minCDR).add(4)).div(100);
+        var minCollateralAmt = debtValueInCollateral.mul(ethers.BigNumber.from(minCDR).add(2)).div(100);
         
         var collateralToWithdraw; 
 
         if(ethers.BigNumber.from(totalCollateralAmt).sub(payableCollateralAmt).lt(minCollateralAmt)) {
             collateralToWithdraw = ethers.BigNumber.from(totalCollateralAmt).sub(minCollateralAmt);
-            console.log(collateralToWithdraw.lt(payableCollateralAmt));
-            maiAmt = collateralToWithdraw.mul(ethers.BigNumber.from(10).pow(priceDecimals)).div(maiPerToken)
+            maiAmt = collateralToWithdraw.mul(maiPerToken).div(ethers.BigNumber.from(10).pow(priceDecimals))
         } else {
             collateralToWithdraw =  payableCollateralAmt;
         }

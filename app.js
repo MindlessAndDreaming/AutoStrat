@@ -24,4 +24,5 @@ agenda.define("Do Work", async (job) => {
     // IIFE to give access to async/await
     await agenda.start();
     await agenda.every("10 minutes", "Do Work");
+    //await agenda.now("Do Work");
 })();
