@@ -4,7 +4,7 @@
   "description": "automated strategies for web3 and defi",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "work": "node app.js"
   },
   "keywords": [
     "web3",

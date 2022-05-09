@@ -25,4 +25,5 @@ agenda.define("Do Work", async (job) => {
     await agenda.start();
     await agenda.every("10 minutes", "Do Work");
     //await agenda.now("Do Work");
+    console.log("working");
 })();
