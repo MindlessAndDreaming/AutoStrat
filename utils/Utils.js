@@ -122,6 +122,7 @@ class Utils {
             else return [];
         } catch (error) {
             console.log(error)
+            return [];
         }
     }
 
