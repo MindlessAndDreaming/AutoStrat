@@ -226,9 +226,9 @@ class QiDao {
         var maicontract = new this.w3.eth.Contract(ierc20EABI, MaiAddress);
         var balance = ethers.BigNumber.from(await maicontract.methods.balanceOf(vault.address).call());
 
-        if (balance.sub(1).gt(0)) {
+        if (balance.sub(1).gt(0) && ethers.parseUnits("0.50", 18).gt(amt)) {
             if(balance.lt(amt)) {
-                amt = balance.sub(1)
+                amt = balance
             }
 
             console.log("borrowing from:", vault.name, "vault", ethers.utils.formatEther(amt), "MAI")
